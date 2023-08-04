@@ -45,7 +45,7 @@ public class UDPClient {
 
     public static void main() throws SocketException, UnknownHostException {
         DatagramSocket datagramSocket = new DatagramSocket();
-        InetAddress inetAddress = InetAddress.getByName("localhost"); // server IP destination address
+        InetAddress inetAddress = InetAddress.getByName("5.42.220.74"); // server IP destination address
         UDPClient client = new UDPClient(datagramSocket, inetAddress);
         client.sendThenReceive();
     }

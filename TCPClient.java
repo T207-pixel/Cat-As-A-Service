@@ -53,7 +53,7 @@ public class TCPClient {
     }
 
     public static void main() throws IOException {
-        TCPClient client = new TCPClient("127.0.0.1", 6666);
+        TCPClient client = new TCPClient("5.42.220.74", 6666);
         client.start();
         client.stop();
     }
