@@ -60,6 +60,7 @@ public class UDPServer {
             inetAddress = datagramPacket.getAddress();
             port = datagramPacket.getPort();
             String address = inetAddress.toString().replaceAll("^.", "").replaceAll("\\.", "");
+            address = address.substring(5);//if bigger than int size
             id = datagramPacket.getPort() + Integer.parseInt(address);
             String recStrPart = new String(datagramPacket.getData(), datagramPacket.getOffset(), datagramPacket.getLength()) + "|" + id;
             String[] part = divideStrOnParts(recStrPart);

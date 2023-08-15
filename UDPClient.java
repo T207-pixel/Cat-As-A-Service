@@ -2,13 +2,14 @@ package org.example;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class UDPClient {
-    private DatagramSocket datagramSocket;  // socket for communication
-    private InetAddress inetAddress;    // IP address of server that we're going to be sending packet
-    private byte[] buffer;  // info that's going to be sent
-    private final int size = 4; // size of datagram
+    private DatagramSocket datagramSocket;
+    private InetAddress inetAddress;
+    private byte[] buffer;
+    private final int size = 4;
     String[] resMsg = new String[10];
 
     public UDPClient(DatagramSocket datagramSocket, InetAddress inetAddress) {
@@ -82,22 +83,21 @@ public class UDPClient {
         return place;
     }
 
-    private boolean ifTilda(int place){
-        StringBuilder outputMsg = new StringBuilder("");
-        for (int i = 0; i <= place; i++){
-            if (resMsg[i] == null){
-                return false;
-            }
+    private  boolean ifTilda(int place){
+        StringBuilder outputMsg = new StringBuilder();
+        for (int i = 0; i < resMsg.length; i++){
             if (resMsg[i].indexOf('&') != -1){
-                resMsg[i] = resMsg[i].replaceAll("\\n", "").replaceAll("&", "");
-                for (int j = 0; j <= place; j++){
-                    outputMsg.append(resMsg[j]);
+                for (int j = 0; j <= i; j++){
+                    if (resMsg[j] == null)
+                        return false;
+                    else {
+                        outputMsg.append(resMsg[j]);
+                        if (j == i){
+                            System.out.println(outputMsg.toString().replaceAll("&", ""));
+                            return true;
+                        }
+                    }
                 }
-                System.out.println(outputMsg);
-                for (String item : resMsg){
-                    item = null;
-                }
-                return true;
             }
         }
         return false;
@@ -117,6 +117,7 @@ public class UDPClient {
                 }
                 String[] msgArr = messageConverter(inputString);
                 sendParts(msgArr);
+                initArr();
                 receiveResponse();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -130,6 +131,10 @@ public class UDPClient {
         InetAddress inetAddress = InetAddress.getByName("5.42.220.74"); // server IP destination address
         UDPClient client = new UDPClient(datagramSocket, inetAddress); // PORT + IPADDRESS/ порядок_сообщения_id/содержание сообщения
         client.sendThenReceive();
+    }
+
+    private void initArr(){
+        Arrays.fill(resMsg, "0");
     }
 
 }
