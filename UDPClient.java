@@ -3,6 +3,7 @@ package org.example;
 import java.io.IOException;
 import java.net.*;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class UDPClient {
@@ -88,7 +89,7 @@ public class UDPClient {
         for (int i = 0; i < resMsg.length; i++){
             if (resMsg[i].indexOf('&') != -1){
                 for (int j = 0; j <= i; j++){
-                    if (resMsg[j] == null)
+                    if (resMsg[j].equals("0"))
                         return false;
                     else {
                         outputMsg.append(resMsg[j]);
