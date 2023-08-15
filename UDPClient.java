@@ -9,6 +9,7 @@ public class UDPClient {
     private InetAddress inetAddress;    // IP address of server that we're going to be sending packet
     private byte[] buffer;  // info that's going to be sent
     private final int size = 4; // size of datagram
+    String[] resMsg = new String[10];
 
     public UDPClient(DatagramSocket datagramSocket, InetAddress inetAddress) {
         this.datagramSocket = datagramSocket;
@@ -54,22 +55,54 @@ public class UDPClient {
     private void receiveResponse() throws IOException { //тут застряли, нужно отсторитровать сообщения, обработать приходящие строки и выывести на экран нотрмально
         String resMsg = "";
         while(true) {
-            //удалить первые 2 символа
             String str = "000000000000";
             buffer = str.getBytes();
-            //byte[] buffer = new byte[512];
             DatagramPacket response = new DatagramPacket(buffer, buffer.length);
             datagramSocket.receive(response);
             String messageFromServer = new String(response.getData(), 0, response.getLength());
-            messageFromServer = messageFromServer.substring(2);
-            resMsg = resMsg + messageFromServer;
-            if (resMsg.indexOf('&') != -1){
-                resMsg = resMsg.replaceAll("&", "");
+            String[] part = divideStrOnParts(messageFromServer);
+            if (ifTilda(insertData(part))){
                 break;
             }
         }
-        System.out.println(resMsg);
     }
+
+    private String[] divideStrOnParts(String str){
+        String[] outputStr = new String[2];
+        int present = str.indexOf('|');
+        outputStr[0] = str.substring(0, present);
+        outputStr[1] = str.substring(present + 1);
+        return outputStr;
+    }
+
+    private int insertData(String[] part){
+        int place = Integer.parseInt(part[0]);
+        String textPart = part[1];
+        resMsg[place] = textPart;
+        return place;
+    }
+
+    private boolean ifTilda(int place){
+        StringBuilder outputMsg = new StringBuilder("");
+        for (int i = 0; i <= place; i++){
+            if (resMsg[i] == null){
+                return false;
+            }
+            if (resMsg[i].indexOf('&') != -1){
+                resMsg[i] = resMsg[i].replaceAll("\\n", "").replaceAll("&", "");
+                for (int j = 0; j <= place; j++){
+                    outputMsg.append(resMsg[j]);
+                }
+                System.out.println(outputMsg);
+                for (String item : resMsg){
+                    item = null;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public void sendThenReceive() {
         Scanner scanner = new Scanner(System.in);
@@ -84,19 +117,7 @@ public class UDPClient {
                 }
                 String[] msgArr = messageConverter(inputString);
                 sendParts(msgArr);
-                ////////////////////////////////////////////---SEND-REQUEST---/////////////////////////////////////////
-//                buffer = inputString.getBytes(); // уже тут нужно передавать разделенные кусочки
-//                DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length, inetAddress, 1234); // inetAddress - is where we want to send it to, port is hardcoded have to change
-//                datagramSocket.send(datagramPacket);
-                ////////////////////////////////////////---RECEIVE-RESPONSE---//////////////////////////////////////////
-
                 receiveResponse();
-                //byte[] buffer = new byte[512];  // allocate bytes for response message
-                //DatagramPacket response = new DatagramPacket(buffer, buffer.length);
-                //datagramSocket.receive(response);
-                //String messageFromServer = new String(response.getData(), 0, response.getLength());
-                //System.out.println(messageFromServer);
-
             } catch (IOException e) {
                 e.printStackTrace();
                 break;

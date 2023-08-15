@@ -72,7 +72,7 @@ public class UDPServer {
 
     }
 
-    private String[] divideStrOnParts(String str){ //работает неверно
+    private String[] divideStrOnParts(String str){
         String[] outputStr = new String[3];
         for (int i = 0; i < 2; i++){
             int present = str.indexOf('|');
@@ -139,7 +139,7 @@ public class UDPServer {
         return false;
     }
 
-    private void createMsg(int mapIndex){  //NEW
+    private void createMsg(int mapIndex){
         for (int i = 0; i < listOfMaps.get(mapIndex).size(); i++){
             String str = listOfMaps.get(mapIndex).get(i);
             formedMsg.append(str);
@@ -148,7 +148,7 @@ public class UDPServer {
         additionalList.remove(mapIndex);
     }
 
-    private void stingProcessing() throws SQLException, IOException { //NEW
+    private void stingProcessing() throws SQLException, IOException {
         String messageFromClient = formedMsg.toString();
         messageFromClient = messageFromClient.replaceAll("&", "");
         String msg;
@@ -166,12 +166,11 @@ public class UDPServer {
             formedMsg.delete(0, formedMsg.length());
             formedMsg.append(msg);
             sendMessage();
-            // дальше какой-то код с буффером 3 строки нужно опять разбить сообщение от сервера на нужные куски и отправить
         }
     }
 
     private void sendMessage() throws IOException {
-        if (!formedMsg.isEmpty()){
+        if (formedMsg.length() != 0){
             sendParts(messageConverter());
         }
     }
@@ -206,9 +205,6 @@ public class UDPServer {
     }
 
     private void sendParts(String[] partsArr) throws IOException {
-        //DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-        //InetAddress inetAddress = datagramPacket.getAddress();
-        //int port = datagramPacket.getPort();
         for (String part : partsArr){
             buffer = part.getBytes();
             DatagramPacket response = new DatagramPacket(buffer, buffer.length, inetAddress, port);
@@ -218,19 +214,16 @@ public class UDPServer {
         formedMsg.setLength(0);
     }
 
-
     public void receiveThenSend() {
         while(true) {
             try {
                 receivedMessages();
-
             } catch (IOException e) {
                 e.printStackTrace();
                 break;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-
         }
     }
 
@@ -238,20 +231,6 @@ public class UDPServer {
         DatagramSocket datagramSocket = new DatagramSocket(1234);
         UDPServer server = new UDPServer(datagramSocket);
         server.receiveThenSend();
-
-//        String[] arr1 = {"2", "aaa", "2109"};
-//        String[] arr3 = {"1", "ccc", "333"};
-//        String[] arr2 = {"2", "bbb", "333"};
-//        String[] arr4 = {"3", "dda~", "333"};
-//        server.insertInMatrix(arr1);
-//        server.insertInMatrix(arr3);
-//        server.insertInMatrix(arr2);
-//        server.insertInMatrix(arr4);
-//        if (server.ifTilda()) {
-////            if (server.checkLength()) {
-////                server.stingProcessing();   // протестировать
-////            }
-//        }
     }
 
 
