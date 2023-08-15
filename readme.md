@@ -44,9 +44,9 @@ Cat gives you chance to stroke it from 2 to 4 times,
 depends on its mood.
 
 ## Launch
-To launch client program install `tmpClientProj.jar` and install
+To launch client program install `test.jar` and install
 java in case its absence.<br> And run the following command from directory where 
-`tmpClientProj.jar` was installed: ```java -jar tmpClientProj.jar```.
+`test.jar` was installed: ```java -jar test.jar```.
 
 ## Author
 Novikov Tim
